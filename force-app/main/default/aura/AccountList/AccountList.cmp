@@ -1,0 +1,47 @@
+<aura:component controller="AccountSearchController">
+    <aura:handler event="c:AccountsLoaded" action="{!c.onAccountsLoaded}"/>
+    <lightning:navigation aura:id="navigation"/>
+    <!--aura attribute for first table-->
+    <aura:attribute name="rows" type="Map[]"/>
+    <aura:attribute name="cols" type="Map[]"/>
+    <!--aura attribute for second table-->
+    <aura:attribute name="rowsToEdit" type="Map[]"/>
+    <aura:attribute name="colsToEdit" type="Map[]"/>
+    <!--aura attribute for diaplay edit account botton-->
+    <aura:attribute name="disabledButton" type="boolean" default='true'/>
+    <!--aura attribute for conditional rendring of tables-->
+    <aura:attribute name="showTableCondition" type="boolean" default='true'/>
+    <aura:attribute name="errors" type="Object" default="[]"/>
+    <aura:attribute name="draftValues" type="Object" default="[]"/>
+    <aura:attribute name="selectedAccount" type="Object" default="[]"/>
+    <aura:renderIf isTrue="{!v.showTableCondition}">
+        <lightning:card title="Account List" iconName="standard:account">
+            <lightning:datatable
+                                 data="{!v.rows}"
+                                 columns="{!v.cols}"
+                                 keyField="Id"
+                                 showRowNumberColumn="true"
+                                 onrowaction="{!c.onRowAction}"
+                                 onrowselection="{! c.handleRowAction }"/>
+            <div slot="footer" class="slds-p-left_medium slds-p-top_medium">
+                <button class="slds-button slds-button_brand" disabled="{!v.disabledButton}" onclick="{! c.handleClick }">Edit Selected Accounts</button>
+            </div>
+        </lightning:card>
+        <aura:set attribute="else">
+            <lightning:card title="Account List" iconName="standard:account">
+                
+                <aura:set attribute="actions">
+                    <lightning:button label="Back" title="Back To Account Search" onclick="{! c.handleClickBack }"/>
+                </aura:set>
+                <lightning:datatable
+                                     data="{!v.rowsToEdit}"
+                                     columns="{!v.colsToEdit}"
+                                     keyField="Id"
+                                     showRowNumberColumn="true"
+                                     errors="{! v.errors }"
+                                     draftValues="{! v.draftValues }"
+                                     onsave="{! c.handleSaveEdition }"/>
+            </lightning:card>
+        </aura:set>
+    </aura:renderIf>
+</aura:component>
